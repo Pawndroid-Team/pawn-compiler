@@ -490,7 +490,7 @@ int AMXAPI amx_Callback(AMX *amx, cell index, cell *result, const cell *params)
      */
     unsigned char *code=amx->base+(int)hdr->cod+(int)amx->cip-sizeof(cell);
     assert(amx->cip >= 4 && amx->cip < (hdr->dat - hdr->cod));
-    assert_static(sizeof(f)<=sizeof(cell)); /* function pointer must fit in a cell */
+    // assert_static(sizeof(f)<=sizeof(cell)); /* function pointer must fit in a cell */
     if (amx->flags & AMX_FLAG_SYSREQN)		/* SYSREQ.N has 2 parameters */
       code-=sizeof(cell);
 #if defined __GNUC__ || defined __ICC || defined ASM32

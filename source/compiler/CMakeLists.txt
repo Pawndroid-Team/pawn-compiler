@@ -55,7 +55,7 @@ endif()
 if(UNIX)
   add_definitions(-DLINUX -DENABLE_BINRELOC -g)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../linux)
-  link_libraries(pthread)
+  # link_libraries(pthread)
 endif()
 
 if(APPLE)

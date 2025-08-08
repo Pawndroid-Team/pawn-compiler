@@ -29,6 +29,8 @@
 #include <string.h>
 #include "sc.h"
 
+#include <jni.h>
+
 #if defined PAWNC_DLL
 
 # include "../amx/dllmain.c"
@@ -363,4 +365,19 @@ int pc_writebin(void *handle,void *buffer,int size)
 long pc_lengthbin(void *handle)
 {
   return ftell((FILE*)handle);
+}
+
+JNIEXPORT jint JNICALL Java_com_pawndroid_PawnCompiler_compilePawn(JNIEnv *env, jobject obj, jstring inputPawnFile, jstring outputAmxFile) {
+  const char *inputFileName = (*env)->GetStringUTFChars(env, inputPawnFile, NULL);
+  const char *outputFileName = (*env)->GetStringUTFChars(env, outputAmxFile, NULL);
+
+  char outputFlag[256];
+  snprintf(outputFlag, sizeof(outputFlag), "-o%s", outputFileName);
+  int argc = 3;
+  char *argv[3];
+  argv[0] = "pawncc";
+  argv[1] = strdup(inputFileName);
+  argv[2] = strdup(outputFlag);
+  int result = pc_compile(argc, argv);
+  return result;
 }
