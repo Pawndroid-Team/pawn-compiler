@@ -373,11 +373,13 @@ JNIEXPORT jint JNICALL Java_com_pawndroid_PawnCompiler_compilePawn(JNIEnv *env, 
 
   char outputFlag[256];
   snprintf(outputFlag, sizeof(outputFlag), "-o%s", outputFileName);
-  int argc = 3;
-  char *argv[3];
-  argv[0] = "pawncc";
-  argv[1] = strdup(inputFileName);
-  argv[2] = strdup(outputFlag);
+  char *argv[] = {
+    "pawncc",
+    strdup(inputFileName),
+    strdup(outputFlag)
+  };
+  int argc = sizeof(argv) / sizeof(argv[0]);
   int result = pc_compile(argc, argv);
+
   return result;
 }
