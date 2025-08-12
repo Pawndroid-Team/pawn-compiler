@@ -367,18 +367,24 @@ long pc_lengthbin(void *handle)
   return ftell((FILE*)handle);
 }
 
-JNIEXPORT jint JNICALL Java_com_pawndroid_PawnCompiler_compilePawn(JNIEnv *env, jobject obj, jstring inputPawnFile, jstring outputAmxFile) {
-  const char *inputFileName = (*env)->GetStringUTFChars(env, inputPawnFile, NULL);
-  const char *outputFileName = (*env)->GetStringUTFChars(env, outputAmxFile, NULL);
+#define DEFAULT_ARGS_COUNT 1
+JNIEXPORT jint JNICALL Java_com_pawndroid_PawnCompiler_compilePawn(JNIEnv *env, jobject __unused obj, jobjectArray compilerArgs) {
+  const jsize argsLength = (*env)->GetArrayLength(env, compilerArgs);
+  const int argc = DEFAULT_ARGS_COUNT + argsLength;
 
-  char outputFlag[256];
-  snprintf(outputFlag, sizeof(outputFlag), "-o%s", outputFileName);
-  char *argv[] = {
-    "pawncc",
-    strdup(inputFileName),
-    strdup(outputFlag)
-  };
-  int argc = sizeof(argv) / sizeof(argv[0]);
+  char *argv[argc];
+  argv[0] = "pawncc";
+
+  for (int i = 0; i < argsLength; i++) {
+    jstring javaString = (jstring)(*env)->GetObjectArrayElement(env, compilerArgs, i);
+    const char* rawString = (*env)->GetStringUTFChars(env, javaString, NULL);
+
+    argv[DEFAULT_ARGS_COUNT + i] = strdup(rawString);
+
+    (*env)->ReleaseStringUTFChars(env, javaString, rawString);
+    (*env)->DeleteLocalRef(env, javaString);
+  }
+
   int result = pc_compile(argc, argv);
 
   return result;
