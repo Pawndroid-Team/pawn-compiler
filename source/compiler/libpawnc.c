@@ -368,7 +368,8 @@ long pc_lengthbin(void *handle)
 }
 
 #define DEFAULT_ARGS_COUNT 1
-JNIEXPORT jint JNICALL Java_com_pawndroid_PawnCompiler_compilePawn(JNIEnv *env, jobject __unused obj, jobjectArray compilerArgs) {
+
+JNIEXPORT jint JNICALL Java_com_pawndroid_PawnCompiler_compilePawn___3Ljava_lang_String_2Ljava_lang_String_2(JNIEnv *env, jobject __unused obj, jobjectArray compilerArgs, jstring logFile) {
   const jsize argsLength = (*env)->GetArrayLength(env, compilerArgs);
   const int argc = DEFAULT_ARGS_COUNT + argsLength;
 
@@ -385,7 +386,17 @@ JNIEXPORT jint JNICALL Java_com_pawndroid_PawnCompiler_compilePawn(JNIEnv *env, 
     (*env)->DeleteLocalRef(env, javaString);
   }
 
+  if (logFile != NULL) {
+    const char* CLogFile = (*env)->GetStringUTFChars(env, logFile, NULL);
+    freopen(CLogFile, "w", stderr);
+    (*env)->ReleaseStringUTFChars(env, logFile, CLogFile);
+  }
+
   int result = pc_compile(argc, argv);
 
   return result;
+}
+
+JNIEXPORT jint JNICALL Java_com_pawndroid_PawnCompiler_compilePawn___3Ljava_lang_String_2(JNIEnv *env, jobject __unused obj, jobjectArray compilerArgs) {
+  return Java_com_pawndroid_PawnCompiler_compilePawn___3Ljava_lang_String_2Ljava_lang_String_2(env, obj, compilerArgs, NULL); 
 }
