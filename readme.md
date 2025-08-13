@@ -46,4 +46,4 @@ public class PawnCompiler {
 }
 ```
 
-*Don't forget to change the package name to your own!*
+**Don't forget to change the package name to your own!**
